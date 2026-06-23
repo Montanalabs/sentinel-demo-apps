@@ -42,29 +42,32 @@ executor changes. That is the point: **the agent proposes; an independent author
 
 ## Run it (2 terminals, no keys)
 
-**Prereq — a running Sentinel gate.** Install the [Sentinel](https://github.com/Montanalabs/sentinel)
-CLI, then `npm run sidecar` boots it with the offline mock provider and in-memory store:
+Install the [Sentinel](https://github.com/Montanalabs/sentinel) CLI:
 
 ```bash
-curl -fsSL https://montanalabs.ai/sentinel/install.sh | sh    # installs the `sentinel` CLI
+curl -fsSL https://montanalabs.ai/sentinel/install.sh | sh
 ```
 
-Alternatives: the Docker image (`docker run -p 4000:4000 -e SENTINEL_SECOND_OPINION_PROVIDER=mock -e SENTINEL_DATABASE_URL=memory ghcr.io/montanalabs/sentinel`),
-or a source checkout (`npm run sidecar` inside the `sentinel` repo). The gate listens on
-`http://localhost:4000`; set `SENTINEL_URL` to point elsewhere.
+**Terminal A — set up and run the gate.** Run this in a *separate* directory (not this demo folder —
+`sentinel init` scaffolds its own `.env`/config):
+
+```bash
+mkdir sentinel-gate && cd sentinel-gate
+sentinel init      # choose: provider = mock · store = memory · packs = fintech
+sentinel start     # gate on http://localhost:4000
+```
+
+**Terminal B — run the demo:**
 
 ```bash
 cd sentinel-coinbase-demo
 npm install
-
-# terminal A — start the Sentinel gate (offline mock provider, in-memory store, demo ledger)
-npm run sidecar
-
-# terminal B
 npm run demo            # scripted scenario: ALLOW → BLOCK → ESCALATE → verify
 npm run interactive     # propose your own transfers and watch the gate decide
 npm run agent           # an LLM decides what to pay; Sentinel gates every call (needs an LLM key)
 ```
+
+> Prefer Docker for the gate? `docker run -p 4000:4000 -e SENTINEL_SECOND_OPINION_PROVIDER=mock -e SENTINEL_DATABASE_URL=memory ghcr.io/montanalabs/sentinel`. Point `SENTINEL_URL` at any reachable gate.
 
 `demo` and `interactive` need **no keys** — the wallet is simulated, but the Sentinel gating,
 escalation, and signed provenance are 100% real (the published `@montanalabs/sentinel` client talking
@@ -137,9 +140,9 @@ view's — so the same `PaymentFlow` powers the scripted, interactive, and LLM-a
 The rule everywhere: **build the action → guard it → execute only on `ALLOW`.** See the Sentinel
 [integration docs](https://sentinel.montanalabs.ai/integrations).
 
-## Demo scaffolding (honest notes)
+## Scope and limitations
 
-These are deliberate demo simplifications, not part of the contract:
+The following are deliberate simplifications in the demo, not properties of Sentinel itself:
 
 - **On-chain amount is capped** in live mode; the gate evaluates the real amount.
 - **Escalations auto-approve** (the demo simulates the treasurer via the real API); production wires a

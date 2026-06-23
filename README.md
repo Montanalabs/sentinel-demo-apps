@@ -43,10 +43,11 @@ its own README, and runs against a local Sentinel sidecar.
 ## Run one
 
 ```bash
-cd sentinel-coinbase-demo
-npm install
-npm run sidecar      # terminal A — start the Sentinel gate
-npm run demo         # terminal B — scripted demo (or: npm run agent / npm run interactive)
+# 1. Start a Sentinel gate (in a separate directory) with the Sentinel CLI:
+#      sentinel init     (provider = mock · store = memory · packs = fintech)
+#      sentinel start
+# 2. Run the demo:
+cd sentinel-coinbase-demo && npm install && npm run demo
 ```
 
 See each app's README for setup, live-mode keys, and architecture.

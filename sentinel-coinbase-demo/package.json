@@ -8,8 +8,7 @@
     "demo": "tsx src/commands/demo.ts",
     "agent": "tsx src/commands/agent.ts",
     "interactive": "tsx src/commands/interactive.ts",
-    "wallet:address": "tsx src/commands/wallet-info.ts",
-    "sidecar": "SENTINEL_SECOND_OPINION_PROVIDER=mock SENTINEL_DATABASE_URL=memory sentinel start"
+    "wallet:address": "tsx src/commands/wallet-info.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.85",
