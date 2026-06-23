@@ -42,10 +42,16 @@ executor changes. That is the point: **the agent proposes; an independent author
 
 ## Run it (2 terminals, no keys)
 
-**Prereq:** a [`sentinel`](https://github.com/Montanalabs/sentinel) checkout next to the
-`sentinel-demo-apps` folder (so it resolves at `../../sentinel`), with its dependencies installed
-(`npm install`). The `npm run sidecar` script starts it from there; alternatively, run a Sentinel
-sidecar yourself and point `SENTINEL_URL` at it.
+**Prereq — a running Sentinel gate.** Install the [Sentinel](https://github.com/Montanalabs/sentinel)
+CLI, then `npm run sidecar` boots it with the offline mock provider and in-memory store:
+
+```bash
+curl -fsSL https://montanalabs.ai/sentinel/install.sh | sh    # installs the `sentinel` CLI
+```
+
+Alternatives: the Docker image (`docker run -p 4000:4000 -e SENTINEL_SECOND_OPINION_PROVIDER=mock -e SENTINEL_DATABASE_URL=memory ghcr.io/montanalabs/sentinel`),
+or a source checkout (`npm run sidecar` inside the `sentinel` repo). The gate listens on
+`http://localhost:4000`; set `SENTINEL_URL` to point elsewhere.
 
 ```bash
 cd sentinel-coinbase-demo
