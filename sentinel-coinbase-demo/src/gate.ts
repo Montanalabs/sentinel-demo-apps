@@ -53,7 +53,7 @@ export class SentinelGate {
     );
     const d = await this.client.guard(
       action,
-      { runId, actor: ACTOR, trace: [{ type: 'intent', text: request.reason }] },
+      { runId, actor: ACTOR, trace: [{ kind: 'message', name: 'intent', content: request.reason }] },
       this.cfg.policy,
     );
     return { verdict: d.verdict as Verdict, reason: d.reason, recordId: d.recordId, escalationId: d.escalationId };
