@@ -42,7 +42,10 @@ executor changes. That is the point: **the agent proposes; an independent author
 
 ## Run it (2 terminals, no keys)
 
-**Prereq:** the [`sentinel`](../sentinel) repo sits next to this folder and has been `npm install`-ed.
+**Prereq:** a [`sentinel`](https://github.com/Montanalabs/sentinel) checkout next to the
+`sentinel-demo-apps` folder (so it resolves at `../../sentinel`), with its dependencies installed
+(`npm install`). The `npm run sidecar` script starts it from there; alternatively, run a Sentinel
+sidecar yourself and point `SENTINEL_URL` at it.
 
 ```bash
 cd sentinel-coinbase-demo

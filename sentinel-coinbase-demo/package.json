@@ -9,7 +9,7 @@
     "agent": "tsx src/commands/agent.ts",
     "interactive": "tsx src/commands/interactive.ts",
     "wallet:address": "tsx src/commands/wallet-info.ts",
-    "sidecar": "cd ../sentinel && SENTINEL_SECOND_OPINION_PROVIDER=mock SENTINEL_DATABASE_URL=memory npm run sidecar"
+    "sidecar": "cd ../../sentinel && SENTINEL_SECOND_OPINION_PROVIDER=mock SENTINEL_DATABASE_URL=memory npm run sidecar"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.85",
