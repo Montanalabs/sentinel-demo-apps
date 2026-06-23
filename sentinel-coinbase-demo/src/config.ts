@@ -20,6 +20,12 @@ export interface CdpCredentials {
 export interface AppConfig {
   /** Base URL of the Sentinel sidecar. */
   readonly sentinelUrl: string;
+  /**
+   * Client-side request timeout (ms). Must be ≥ the gate's slow-tier budget
+   * (`SENTINEL_SLOW_BUDGET_MS`) plus network margin, otherwise a slow real-model second opinion trips
+   * a fail-closed BLOCK before the gate can answer. Defaults generously for real models.
+   */
+  readonly sentinelTimeoutMs: number;
   /** Policy pack the gate evaluates against. */
   readonly policy: string;
   /** The agent's funded treasury account, as the policy/ledger knows it. */
@@ -87,6 +93,7 @@ export function loadConfig(): AppConfig {
   loadDotenv(root);
   return {
     sentinelUrl: read('SENTINEL_URL', 'http://localhost:4000').replace(/\/+$/, ''),
+    sentinelTimeoutMs: Number(read('SENTINEL_TIMEOUT_MS', '20000')),
     policy: read('POLICY', 'fintech.payments'),
     fromAccount: read('FROM_ACCOUNT', 'acct_ops'),
     wallet: {

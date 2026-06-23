@@ -14,7 +14,7 @@ export const COUNTERPARTIES = {
   vendor_42: {
     id: 'vendor_42',
     label: 'Acme GPU — vetted vendor',
-    address: '0x5b38da6a701c568545dcfcb03fcb875f56beddc4',
+    address: '0x7c3a9e2b15d8460af1c6e0934d52187bca3f0d29',
     note: 'allow-listed',
   },
   acct_ofac_1: {

@@ -16,10 +16,11 @@ const ACTOR = { id: 'agent-treasury-001', roles: ['ops'] };
 export class SentinelGate {
   private readonly client: SentinelClient;
 
-  /** @param cfg - runtime configuration (the sidecar URL is read from here). */
+  /** @param cfg - runtime configuration (sidecar URL + client timeout are read from here). */
   constructor(private readonly cfg: AppConfig) {
-    // fail closed: an unreachable/garbled sidecar yields BLOCK, never a silent allow.
-    this.client = new SentinelClient({ endpoint: cfg.sentinelUrl, failMode: 'closed' });
+    // fail closed: an unreachable/garbled sidecar yields BLOCK, never a silent allow. The timeout is
+    // generous (>= the gate's slow-tier budget) so a real-model second opinion isn't cut short.
+    this.client = new SentinelClient({ endpoint: cfg.sentinelUrl, failMode: 'closed', timeoutMs: cfg.sentinelTimeoutMs });
   }
 
   /**

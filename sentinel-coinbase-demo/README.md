@@ -67,6 +67,12 @@ npm run agent           # an LLM decides what to pay; Sentinel gates every call 
 
 > Prefer Docker for the gate? `docker run -p 4000:4000 -e SENTINEL_SECOND_OPINION_PROVIDER=mock -e SENTINEL_DATABASE_URL=memory ghcr.io/montanalabs/sentinel`. Point `SENTINEL_URL` at any reachable gate.
 
+> **Using a real second-opinion model** (`provider = anthropic`/`openai`) instead of `mock`? The slow
+> tier calls a real model, so set `SENTINEL_TIMEOUT_MS` (default `20000`) to at least the gate's
+> `SENTINEL_SLOW_BUDGET_MS` plus margin. Otherwise the client times out and the action **fails closed
+> (BLOCK)** before the gate can answer — safe, but not the verdict you wanted. `mock` is instant, so
+> the default works as-is.
+
 `demo` and `interactive` need **no keys** — the wallet is simulated, but the Sentinel gating,
 escalation, and signed provenance are real: the published `@montanalabs/sentinel` client talking to a
 running sidecar.
