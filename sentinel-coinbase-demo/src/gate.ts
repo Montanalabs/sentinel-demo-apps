@@ -48,9 +48,14 @@ export class SentinelGate {
   async guard(request: TransferRequest, runId: string): Promise<GateDecision> {
     const action = Action.payment(
       { amount: request.amountUsdc, from: this.cfg.fromAccount, to: request.counterparty.id, currency: 'USDC' },
-      { meta: { asset: 'USDC', network: this.cfg.wallet.network, recipient: request.counterparty.address, rail: 'coinbase-cdp' } },
+      // carry the stated intent so a second-opinion model can verify the action against it
+      { meta: { asset: 'USDC', network: this.cfg.wallet.network, recipient: request.counterparty.address, rail: 'coinbase-cdp', intent: request.reason } },
     );
-    const d = await this.client.guard(action, { runId, actor: ACTOR }, this.cfg.policy);
+    const d = await this.client.guard(
+      action,
+      { runId, actor: ACTOR, trace: [{ type: 'intent', text: request.reason }] },
+      this.cfg.policy,
+    );
     return { verdict: d.verdict as Verdict, reason: d.reason, recordId: d.recordId, escalationId: d.escalationId };
   }
 
