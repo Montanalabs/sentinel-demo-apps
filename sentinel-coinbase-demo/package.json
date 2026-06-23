@@ -1,0 +1,28 @@
+{
+  "name": "sentinel-coinbase-demo",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "End-to-end demo: an AI agent with a Coinbase wallet, gated by the Sentinel action-gate.",
+  "scripts": {
+    "demo": "tsx src/commands/demo.ts",
+    "agent": "tsx src/commands/agent.ts",
+    "interactive": "tsx src/commands/interactive.ts",
+    "wallet:address": "tsx src/commands/wallet-info.ts",
+    "sidecar": "cd ../sentinel && SENTINEL_SECOND_OPINION_PROVIDER=mock SENTINEL_DATABASE_URL=memory npm run sidecar"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.85",
+    "@ai-sdk/openai": "^3.0.74",
+    "@coinbase/cdp-sdk": "^1.51.2",
+    "@montanalabs/sentinel": "^1.0.0",
+    "ai": "^6.0.208",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "comment": "Live Coinbase mode (DEMO_MODE=live) additionally needs: npm i @coinbase/cdp-sdk"
+}
