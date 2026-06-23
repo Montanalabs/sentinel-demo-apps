@@ -8,9 +8,9 @@
 <h1 align="center">Sentinel Demo Apps</h1>
 
 <p align="center">
-  <strong>Runnable, demo-worthy integrations of the Sentinel action-gate.</strong><br />
-  Each app puts Sentinel in front of a real agent action — <strong>allow · block · escalate</strong> —
-  with a signed, hash-chained audit trail.
+  <strong>Reference integrations of the Sentinel action-gate for autonomous AI agents.</strong><br />
+  Each application demonstrates the gate authorizing a consequential agent action — returning
+  <strong>ALLOW, BLOCK, or ESCALATE</strong> before execution — with a signed, tamper-evident audit trail.
 </p>
 
 <p align="center">
@@ -28,17 +28,17 @@ at the moment an agent is about to do something consequential, it calls the gate
 `ALLOW` / `BLOCK` / `ESCALATE` **before** anything executes — signing an auditor-grade receipt for
 every decision.
 
-This repo collects **standalone, runnable demos** that show that gate in front of real agent actions
-across ecosystems. Every app is self-contained, has its own README, and runs against a local Sentinel
-sidecar.
+This repository contains **standalone, runnable example integrations** that demonstrate the gate
+authorizing real agent actions across different ecosystems. Each application is self-contained, has
+its own README, and runs against a local Sentinel sidecar.
 
 ## Apps
 
 | App | What it shows | Stack |
 | --- | --- | --- |
-| [`sentinel-coinbase-demo`](./sentinel-coinbase-demo) | An autonomous treasury agent with a real Coinbase wallet — every on-chain payment clears Sentinel first (allow vendor pay · **block** sanctioned · **escalate** high-value to dual-control), settled on Base Sepolia and fully auditable. | TypeScript · Coinbase CDP · Vercel AI SDK |
+| [`sentinel-coinbase-demo`](./sentinel-coinbase-demo) | An autonomous treasury agent operating a Coinbase wallet. Every on-chain payment is authorized by Sentinel before execution: routine payments are allowed, sanctioned counterparties are blocked, and high-value transfers are escalated for human approval. Settled on Base Sepolia with a verifiable audit trail. | TypeScript · Coinbase CDP · Vercel AI SDK |
 
-*More demos coming.*
+*Additional integrations will be added over time.*
 
 ## Run one
 
