@@ -9,7 +9,7 @@
 
 <p align="center">
   <strong>Gated agent payments — an AI agent with a Coinbase wallet, behind the Sentinel action-gate.</strong><br />
-  The agent proposes; an independent authority disposes — <strong>allow · block · escalate</strong>, all signed.
+  Sentinel independently authorizes every payment the agent proposes — <strong>allow · block · escalate</strong> — and signs each decision.
 </p>
 
 <p align="center">
@@ -25,18 +25,16 @@
   “Coinbase”, “CDP”, “AgentKit”, and “Base” are trademarks of Coinbase Global, Inc.</sub>
 </p>
 
-> Standalone demo project — not part of any repo. Made to be run, read, and shown.
-
-An autonomous **treasury agent holds a Coinbase wallet**, and every on-chain action it proposes is
-sent to the **independent Sentinel gate first**. Only an `ALLOW` ever reaches the wallet:
+An autonomous **treasury agent operates a Coinbase wallet**, and every on-chain action it proposes is
+sent to the **independent Sentinel gate first**. Only an `ALLOW` reaches the wallet:
 
 - a routine vendor payment → **ALLOW** → settles on Base
 - a payment to a sanctioned address → **BLOCK** → the wallet is never called
 - a high-value transfer → **ESCALATE** → held for human dual-control, then settles on approval
 
-…and the whole run is a **signed, hash-chained audit log** that is verified end-to-end at the finish.
-The gate is identical whether the wallet is simulated or a real Coinbase CDP wallet — only the
-executor changes. That is the point: **the agent proposes; an independent authority disposes.**
+Every decision is written to a **signed, hash-chained audit log**, verified end-to-end at the end of
+the run. The gate behaves identically whether the wallet is simulated or a real Coinbase CDP wallet;
+only the executor differs.
 
 ---
 
@@ -70,15 +68,15 @@ npm run agent           # an LLM decides what to pay; Sentinel gates every call 
 > Prefer Docker for the gate? `docker run -p 4000:4000 -e SENTINEL_SECOND_OPINION_PROVIDER=mock -e SENTINEL_DATABASE_URL=memory ghcr.io/montanalabs/sentinel`. Point `SENTINEL_URL` at any reachable gate.
 
 `demo` and `interactive` need **no keys** — the wallet is simulated, but the Sentinel gating,
-escalation, and signed provenance are 100% real (the published `@montanalabs/sentinel` client talking
-to a real sidecar).
+escalation, and signed provenance are real: the published `@montanalabs/sentinel` client talking to a
+running sidecar.
 
 ### Autonomous agent (`npm run agent`)
 
 A real model (Anthropic Claude by default, or OpenAI) is given a treasury task and one `send_payment`
-tool; **Sentinel gates the tool before any funds move.** The task deliberately includes a legit
-payment, a high-value sweep, *and* a prompt-injected payment to a sanctioned address — so you watch
-the gate allow / escalate / block the model's own choices. Set one LLM key in `.env`:
+tool; **Sentinel gates the tool before any funds move.** The task deliberately includes a legitimate
+payment, a high-value sweep, *and* a prompt-injected payment to a sanctioned address, so the gate's
+allow / escalate / block decisions are driven by the model's own choices. Set one LLM key in `.env`:
 
 ```bash
 LLM_PROVIDER=anthropic
@@ -100,9 +98,9 @@ npm run agent              # gates each payment; ALLOW/approved transfers settle
 ```
 
 The wallet **self-funds** from the CDP faucet (ETH for gas + USDC). On-chain settlement is **capped**
-at `LIVE_TESTNET_CAP_USDC` (default 0.1) so it stays faucet-cheap — **the gate still evaluates the full
-policy amount**, so verdicts are unchanged. A guard refuses any non-Sepolia network unless
-`ALLOW_MAINNET=true`. The BLOCK never touches the chain.
+at `LIVE_TESTNET_CAP_USDC` (default 0.1) so testnet faucet funds are sufficient — **the gate still
+evaluates the full policy amount**, so verdicts are unchanged. A guard refuses any non-Sepolia network
+unless `ALLOW_MAINNET=true`. A blocked transfer never touches the chain.
 
 This uses the [`@coinbase/cdp-sdk`](https://github.com/coinbase/cdp-sdk) Server Wallet — the same
 wallet [Coinbase AgentKit](https://github.com/coinbase/agentkit) drives — so the gate drops straight
@@ -112,7 +110,7 @@ into an AgentKit action's executor.
 
 ## Architecture
 
-Clean layering, dependency-injected, no module reaches across its concern:
+Layered and dependency-injected; each module owns a single concern:
 
 | Module | Responsibility |
 | --- | --- |
@@ -123,10 +121,10 @@ Clean layering, dependency-injected, no module reaches across its concern:
 | `wallet.ts` | `Wallet` interface + `SimulatedWallet` / `CdpWallet` + `createWallet` factory |
 | `payment-flow.ts` | `PaymentFlow.process` — propose → guard → settle/block/escalate→approve→settle |
 | `view.ts` / `ui.ts` | presentation only (`FlowReporter`); the flow emits events, the view renders |
-| `index.ts` · `agent.ts` · `interactive.ts` · `wallet-info.ts` | entry points, sharing the same flow |
+| `commands/` (`demo.ts` · `agent.ts` · `interactive.ts` · `wallet-info.ts`) | entry points, all sharing the same flow |
 
 The decision is always the gate's, settlement is always the wallet's, and rendering is always the
-view's — so the same `PaymentFlow` powers the scripted, interactive, and LLM-agent runs unchanged.
+view's — so the same `PaymentFlow` is reused by the scripted, interactive, and agent entry points.
 
 ## How it maps to a real integration
 

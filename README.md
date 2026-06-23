@@ -21,7 +21,7 @@
 
 ---
 
-## What this is
+## Overview
 
 [Sentinel](https://github.com/Montanalabs/sentinel) is the **independent action-gate for AI agents**:
 at the moment an agent is about to do something consequential, it calls the gate and gets back
